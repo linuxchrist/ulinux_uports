@@ -35,6 +35,8 @@ sed -e '/m64=/s/lib64/lib/' \
     -e '/m32=/s/m32=.*/m32=..\/lib32$(call if_multiarch,:i386-linux-gnu)/' \
     -i.orig gcc/config/i386/t-linux64
 sed -i 's,/lib,/utoolscross/lib,g' gcc/config/i386/t-linux64
+sed -i 's,i386-linux-gnu,i686-cross-linux-gnu,g' gcc/config/i386/t-linux64
+sed -i 's,x86_64-linux-gnu,x86_64-cross-linux-gnu,g' gcc/config/i386/t-linux64
 # change GCC's default dynamic linker to use the one installed in /tools.
 sed -i 's,/lib/ld-linux.so.2,/utools/lib32/ld-linux.so.2,g' gcc/config/i386/linux64.h
 sed -i 's,/lib64/ld-linux-x86-64.so.2,/utools/lib/ld-linux-x86-64.so.2,g' gcc/config/i386/linux64.h
@@ -74,18 +76,27 @@ mkdir ../gccbuild && cd ../gccbuild
 	    		 --with-glibc-version=2.38	\
 			 --disable-shared		\
                          --enable-threads=posix		\
-                         --enable-multilib		\
+                         --disable-multilib		\
                          --with-multilib-list=m64,m32,mx32 \
                          --enable-languages=c
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
 
-defaultpackager
+# we don't delete or remove the install dir because gcc pass2 needs to be built ontop of the
+# first install of gcc... 
+#defaultpackager
 cd $src && rm -rf gcc-$pkgver gccbuild
-cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+#cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
 # create a symlink so we can enable shared for next compile or gcc core pass 2
-ln -vs libgcc.a `$installdir/utoolscross/bin/${crosstarget}-gcc -print-libgcc-file-name | \
+ln -vs libgcc.a `${crosstarget}-gcc -m64 -print-libgcc-file-name | \
     sed 's/libgcc/&_eh/'`
+ln -vs libgcc.a `${crosstarget}-gcc -m32 -print-libgcc-file-name | \
+    sed 's/libgcc/&_eh/'`
+ln -vs libgcc.a `${crosstarget}-gcc -mx32 -print-libgcc-file-name | \
+    sed 's/libgcc/&_eh/'`
+
 ln -sv libgcc.a $installdir/utoolscross/lib/gcc/x86_64-cross-linux-gnu/13.2.0/libgcc_eh.a
+ln -sv libgcc.a $installdir/utoolscross/lib/gcc/x86_64-cross-linux-gnu/13.2.0/32/libgcc_eh.a
+ln -sv libgcc.a $installdir/utoolscross/lib/gcc/x86_64-cross-linux-gnu/13.2.0/x32/libgcc_eh.a
 # end of file

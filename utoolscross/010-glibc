@@ -35,11 +35,8 @@ CXX="$crosstarget-g++ -m64"           \
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
-#find . -maxdepth 1 ! -name $installdir/utoolscross/lib32 -type d -not -path '.' -exec rm -rf {} +
 
 defaultpackager
 cd $src && rm -rf glibc-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
-# remember to clean install dir for next package
-rm -rf $installdir/*
 # end of file

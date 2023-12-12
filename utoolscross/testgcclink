@@ -5,8 +5,8 @@
 . ./uports-config && PATH=$tpath
 
 # create a symlink so we can enable shared for next compile or gcc core pass 2
-#ln -vs libgcc.a `$installdir/utoolscross/bin/${crosstarget}-gcc -m64 -print-libgcc-file-name | \
-#    sed 's/libgcc/&_eh/'`
+ln -vs libgcc.a `${crosstarget}-gcc -m64 -print-libgcc-file-name | \
+    sed 's/libgcc/&_eh/'`
 ln -vs libgcc.a `${crosstarget}-gcc -m32 -print-libgcc-file-name | \
     sed 's/libgcc/&_eh/'`
 ln -vs libgcc.a `${crosstarget}-gcc -mx32 -print-libgcc-file-name | \

@@ -30,6 +30,4 @@ rm -rf $installdir/utoolscross/local
 defaultpackager
 cd $src && rm -rf zstd-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
-# remember to clean install dir for next package
-rm -rf $installdir/*
 # end of file

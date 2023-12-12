@@ -34,6 +34,4 @@ make install DESTDIR=$installdir || exit $?
 defaultpackager
 cd $src && rm -rf mpfr-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
-# remember to clean install dir for next package
-rm -rf $installdir/*
 # end of file

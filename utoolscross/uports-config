@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 #
+# delete all other dirs!
+# #find . -maxdepth 1 ! -name $installdir/utoolscross/lib32 -type d -not -path '.' -exec rm -rf {} +
 #
 # uports: a universal linux/gnu ports collection: GPLV3
 
@@ -167,9 +169,7 @@ echo 2.0 > debian-binary
 echo "Creating deb package"
 ar r $pkgdir/$fullpkgname.deb debian-binary control.tar.gz data.tar.gz
 echo "Cleaning up..."
-# we don't delete or remove the install dir because gcc pass2 needs to be built ontop of the
-# first install of gcc... 
-rm -rf $staging/*
+rm -rf $installdir/* $staging/*
 }
 
 # end of file
