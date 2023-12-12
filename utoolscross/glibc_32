@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-glibc_32
+pkgname=utoolscross-glibc_lib32
 pkgver=2.38
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -22,19 +22,24 @@ tar -xvf glibc-2.38.tar.xz
 cd glibc-$pkgver
 mkdir -pv build && cd build
 
-CC="$crosstarget-gcc -m32"	\
-CXX="$crosstarget-g++ -m32"	\
-../configure --prefix=$cross	\
-	     --build=$build	\
-	     --host=$crosstarget32 \
-	     --with-headers=$cross/usr/include \
-	     --enable-multi-arch \
-	     --libdir=$cross/lib32
+CC="$crosstarget-gcc -m32"            \
+CXX="$crosstarget-g++ -m32"           \
+../configure --prefix=$utools	      \
+             --build=$build           \
+             --host=$crosstarget32    \
+             --with-headers=$utools/include \
+	     --enable-shared          \
+             --libdir=$utools/lib32 \
+             --libexecdir=$utools/lib32 \
+             libc_cv_slibdir=$utools/lib32
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
+#find . -maxdepth 1 ! -name $installdir/utoolscross/lib32 -type d -not -path '.' -exec rm -rf {} +
 
 defaultpackager
 cd $src && rm -rf glibc-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file

@@ -2,58 +2,61 @@
 #
 #
 # uports: a universal linux/gnu ports collection: GPLV3
+#
+# check ld search path
+#ld --verbose | grep SEARCH_DIR | tr -s ' ;' \\012
+# end of make install command...
+#  || exit $?
 
 cwd=$(pwd)
 build=$(echo ${MACHTYPE} | sed -e 's/-[^-]*/-build_pc/')
 toolstarget="x86_64-tools-linux-gnu"
-toolstarget32="i686-tools-linux-gnu"
-toolstargetx32="x86_64-tools-linux-gnux32"
 crosstarget="x86_64-cross-linux-gnu"
 crosstarget32="i686-cross-linux-gnu"
 crosstargetx32="x86_64-cross-linux-gnux32"
-utarget="x86_64-u-linux-gnu"
-utarget32="i686-u-linux-gnu"
-utargetx32="x86_64-u-linux-gnux32"
+target="x86_64-linux-gnu"
+target32="i686-linux-gnu"
+targetx32="x86_64-linux-gnux32"
 
 uports="/mnt/uports"
+system="$uports/linux"
 src="$uports/sources"
-system="$uports/ulinux"
-tools="$system/utools"
-crosstools="$system/utoolscross"
-utools="/utools"
-utoolscross="/utoolscross"
-ulinux="/ulinux"
-tpath="$utoolscross/bin:$utools/bin:$ulinux/bin:$PATH"
-upath="$utoolscross/bin:$utools/bin:$ulinux/bin:"
+utools="$system/tools"
+utoolscross="$system/crosstools"
+tools="/tools"
+cross="/crosstools"
+linux="/linux"
+tpath="$cross/bin:$tools/bin:$linux/bin:$PATH"
+upath="$cross/bin:$tools/bin:$linux/bin:"
 pkgdir="$uports/pkgs"
 staging="$uports/staging"
 installdir="$uports/install"
 
 if [ ! -d $uports ]; then mkdir -pv $uports; fi
-if [ ! -d $src ]; then mkdir -pv $src; fi
 if [ ! -d $system ]; then mkdir -pv $system; fi
-if [ ! -d $tools ]; then mkdir -pv $tools; fi
-if [ ! -d $crosstools ]; then mkdir -pv $crosstools; fi
+if [ ! -d $src ]; then mkdir -pv $src; fi
+if [ ! -d $utools ]; then mkdir -pv $utools; fi
+if [ ! -d $utoolscross ]; then mkdir -pv $utoolscross; fi
 if [ ! -d $pkgdir ]; then mkdir -pv $pkgdir; fi
 if [ ! -d $staging ]; then mkdir -pv $staging; fi
 if [ ! -d $installdir ]; then mkdir -pv $installdir; fi
-if [ ! -e "$utools" ]; then  ln -sv $tools / ; fi
-if [ ! -e "$utoolscross" ]; then  ln -sv $crosstools / ; fi
-if [ ! -e "$ulinux" ]; then  ln -sv $system / ; fi
+if [ ! -e "$tools" ]; then  ln -sv $utools / ; fi
+if [ ! -e "$cross" ]; then  ln -sv $utoolscross / ; fi
+if [ ! -e "$linux" ]; then  ln -sv $system / ; fi
 if [ -d $uports ]; then echo $uports; fi
 if [ -d $system ]; then echo $system; fi
 if [ -d $src ]; then echo $src; fi
-if [ -d $tools ]; then echo $tools; fi
-if [ -d $crosstools ]; then echo $crosstools; fi
+if [ -d $utools ]; then echo $utools; fi
+if [ -d $utoolscross ]; then echo $utoolscross; fi
 if [ -d $pkgdir ]; then echo $pkgdir; fi
 if [ -d $staging ]; then echo $staging; fi
 if [ -d $installdir ]; then echo $installdir; fi
-if [ -e "$utools" ]; then  ls -l $utools; fi
-if [ -e "$utoolscross" ]; then  ls -l $utoolscross; fi
-if [ -e "$ulinux" ]; then  ls -l $ulinux; fi
-if [ ! -e "$utools" ]; then  echo "Warning: $utools symlink is broken";exit 1; fi
-if [ ! -e "$utoolscross" ]; then  echo "Warning: $utoolscross symlink is broken";exit 1; fi
-if [ ! -e "$ulinux" ]; then  echo "Warning: $ulinux symlink is broken";exit 1; fi
+if [ -e "$tools" ]; then  ls -l $tools; fi
+if [ -e "$cross" ]; then  ls -l $cross; fi
+if [ -e "$linux" ]; then  ls -l $linux; fi
+if [ ! -e "$tools" ]; then  echo "Warning: $tools symlink is broken";exit 1; fi
+if [ ! -e "$cross" ]; then  echo "Warning: $cross symlink is broken";exit 1; fi
+if [ ! -e "$linux" ]; then  echo "Warning: $linux symlink is broken";exit 1; fi
 echo "NORMAL PATH= $PATH"
 echo "tpath= $tpath"
 
@@ -167,9 +170,7 @@ echo 2.0 > debian-binary
 echo "Creating deb package"
 ar r $pkgdir/$fullpkgname.deb debian-binary control.tar.gz data.tar.gz
 echo "Cleaning up..."
-# we don't delete or remove the install dir because gcc pass2 needs to be built ontop of the
-# first install of gcc... 
-rm -rf $staging/*
+rm -rf $installdir/* $staging/*
 }
 
 # end of file

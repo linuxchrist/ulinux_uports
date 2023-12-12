@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-mpfr
+pkgname=utoolscross-mpfr
 pkgver=4.2.1
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -21,12 +21,12 @@ if [ ! -f mpfr-4.2.1.tar.xz ]; then wget $sources; fi
 tar -xvf mpfr-4.2.1.tar.xz
 cd mpfr-$pkgver
 
-./configure --build=$build       \
-	    --host=$build        \
-	    --prefix=$cross      \
-	    --with-gmp=$cross    \
-	    --enable-shared      \
-	    --disable-static
+./configure --build=$build        \
+	    --host=$build         \
+	    --prefix=$utoolscross \
+	    --with-gmp=$utoolscross \
+	    --enable-shared       \
+	    --enable-static
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
@@ -34,4 +34,6 @@ make install DESTDIR=$installdir || exit $?
 defaultpackager
 cd $src && rm -rf mpfr-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file

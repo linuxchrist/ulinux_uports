@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-zstd
+pkgname=utoolscross-zstd
 pkgver=1.5.5
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -22,11 +22,14 @@ tar -xvf zstd-1.5.5.tar.gz
 cd zstd-$pkgver
 
 make -j$(nproc)
-make install DESTDIR=$installdir/crosstools || exit $?
-cd $installdir/crosstools && mv usr/local/* .  # fix zstd funky install dirs
-rm -rf $installdir/crosstools/local
+make install DESTDIR=$installdir/utoolscross || exit $?
+cd $installdir/utoolscross && mv usr/local/* .  # fix zstd funky install dirs
+rm -rf $installdir/utoolscross/usr
+rm -rf $installdir/utoolscross/local
 
 defaultpackager
 cd $src && rm -rf zstd-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file

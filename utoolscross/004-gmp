@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-gmp
+pkgname=utoolscross-gmp
 pkgver=6.3.0
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -23,9 +23,9 @@ cd gmp-$pkgver
 
 ./configure --build=$build   \
 	    --host=$build    \
-	    --prefix=$cross  \
+	    --prefix=$utoolscross  \
 	    --enable-shared  \
-	    --disable-static
+	    --enable-static
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
@@ -33,4 +33,6 @@ make install DESTDIR=$installdir || exit $?
 defaultpackager
 cd $src && rm -rf gmp-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file

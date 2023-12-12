@@ -1,0 +1,29 @@
+#!/usr/bin/env perl
+
+#require "configg";
+require "perlconfig";
+
+$pkgname="crosstools-zlib";
+$pkgver="1.3";
+$pkgrel="1";
+$maintainer="linuxchrist@gmail.com";
+$description="contains compression and decompression routines used by some programs.";
+$homepage="https://zlib.net/";
+$sources="https://zlib.net/fossils/zlib-1.3.tar.gz";
+$arch="amd64";
+$depends="";
+$comment="uports: a universal linux/gnu ports collection";
+
+sub listsrc{
+chdir $src;
+print(getcwd(), "\n");
+opendir (DIR, $src) or die $!;
+while (my $file = readdir(DIR)) {
+	print "$file ";
+	}
+}
+
+listsrc();
+#$cmd = "uports-config";
+#system($cmd);
+

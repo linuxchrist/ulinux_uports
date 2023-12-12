@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-isl
+pkgname=utoolscross-isl
 pkgver=0.24
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -23,11 +23,11 @@ cd isl-$pkgver
 
 ./configure --build=$build            \
 	    --host=$build             \
-	    --prefix=$cross           \
+	    --prefix=$utoolscross     \
 	    --enable-shared           \
-	    --disable-static          \
+	    --enable-static           \
 	    --with-gmp=system         \
-	    --with-gmp-prefix=$cross
+	    --with-gmp-prefix=$utoolscross
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
@@ -35,4 +35,6 @@ make install DESTDIR=$installdir || exit $?
 defaultpackager
 cd $src && rm -rf isl-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file

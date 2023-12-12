@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-linux-headers
+pkgname=utoolscross-linux-headers
 pkgver=6.6.3
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -21,15 +21,28 @@ if [ ! -f linux-6.6.3.tar.xz ]; then wget $sources; fi
 tar -xvf linux-6.6.3.tar.xz
 cd linux-$pkgver
 
-mkdir $installdir/crosstools
-ln -sv . $installdir/crosstools/usr
-ln -sv lib $installdir/crosstools/lib64
+# we create a mini filesystem skeleton for /utools and /utoolscross
+# install host system cross tools to /utoolscross and
+# install headers and the newly cross compiled glibc and programs in /utools
+mkdir -pv $installdir/utools
+ln -sv . $installdir/utools/usr
+ln -sv . $installdir/utools/local
+ln -sv lib $installdir/utools/lib64
+mkdir -pv $installdir/utools/{lib32,libx32}
+
+mkdir -pv $installdir/utoolscross
+ln -sv . $installdir/utoolscross/usr
+ln -sv . $installdir/utoolscross/local
+ln -sv lib $installdir/utoolscross/lib64
+mkdir -pv $installdir/utoolscross/{lib32,libx32}
 
 make mrproper
-make headers
-make INSTALL_HDR_PATH=$installdir/crosstools/usr headers_install
+make ARCH=x86_64 headers
+make ARCH=x86_64 INSTALL_HDR_PATH=$installdir/utools/usr headers_install
 
 defaultpackager
 cd $usrc && rm -rf linux-$pkgver
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file

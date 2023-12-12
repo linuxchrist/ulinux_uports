@@ -1,0 +1,15 @@
+#!/usr/bin/env perl
+
+use Cwd;
+
+$tpath = '/utools/bin:utoolscross/bin:ulinux/bin:';
+$spath = $ENV{'PATH'};
+$upath = ($tpath . $spath );
+$ENV{'PATH'} = $upath;
+#print("PATH=", $ENV{'PATH'}, "\n");
+
+$src = "/mnt/uports/sources";
+
+#$cmd = "uports-config";
+#system($cmd);
+#print $ENV{'PATH'};

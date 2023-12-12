@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 #
 #
+#
+# check ld search path
+# ld --verbose | grep SEARCH_DIR | tr -s ' ;' \\012
+#
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-binutils
+pkgname=utoolscross-binutils
 pkgver=2.41
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -25,16 +29,17 @@ mkdir -v ../binutils-build && cd ../binutils-build
 		--build=$build      \
 	    	--host=$build       \
 	    	--target=$crosstarget \
-	    	--prefix=$cross     \
+	    	--prefix=$utoolscross \
 		--disable-nls       \
 		--disable-werror    \
 		--disable-static    \
+		--enable-shared     \
 		--enable-threads    \
 		--enable-multilib   \
-                --enable-shared     \
-	    	--with-zstd=$cross  \
-		--with-zlib=$cross  \
-	    	--with-sysroot=$cross
+	    	--with-zstd=$utoolscross \
+		--with-zlib=$utoolscross \
+	    	--with-sysroot=$utools \
+		--with-lib-path=$utools/lib:$utools/lib32:$utools/libx32
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
@@ -42,4 +47,6 @@ make install DESTDIR=$installdir || exit $?
 defaultpackager
 cd $src && rm -rf bintuils-$pkgver binutils-build
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
+# remember to clean install dir for next package
+rm -rf $installdir/*
 # end of file
