@@ -32,7 +32,7 @@ mkdir -v ../binutils-build && cd ../binutils-build
 	    	--prefix=$utoolscross \
 		--disable-nls       \
 		--disable-werror    \
-		--disable-static    \
+		--enable-static     \
 		--enable-shared     \
 		--enable-threads    \
 		--enable-multilib   \
@@ -45,7 +45,7 @@ make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
 
 defaultpackager
-cd $src && rm -rf bintuils-$pkgver binutils-build
+cd $src && rm -rf binutils-$pkgver binutils-build
 cd $pkgdir && dpkg --force-all -i $fullpkgname.deb
 # remember to clean install dir for next package
 rm -rf $installdir/*
