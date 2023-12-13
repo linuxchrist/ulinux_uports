@@ -4,7 +4,7 @@
 # uports: a universal linux/gnu ports collection
 . ./uports-config && PATH=$tpath
 
-pkgname=crosstools-glibc
+pkgname=utoolscross-glibc
 pkgver=2.38
 pkgrel=1
 maintainer="linuxchrist@gmail.com"
@@ -21,11 +21,15 @@ if [ ! -f glibc-2.38.tar.xz ]; then wget $sources; fi
 tar -xvf glibc-2.38.tar.xz
 cd glibc-$pkgver
 mkdir -pv build && cd build
-../configure --prefix=$cross	     \
-	     --build=$build	     \
-	     --host=$crosstarget     \
-	     --with-headers=$cross/usr/include \
-	     --enable-multi-arch
+
+CC="$crosstarget-gcc -m64"            \
+CXX="$crosstarget-g++ -m64"           \
+../configure --prefix=$utools	      \
+             --build=$build           \
+             --host=$crosstarget      \
+             --with-headers=$utools/include \
+             --libdir=$utools/lib     \
+             --libexecdir=$utools/lib
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?

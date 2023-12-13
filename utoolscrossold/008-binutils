@@ -28,18 +28,17 @@ mkdir -v ../binutils-build && cd ../binutils-build
 ../binutils-$pkgver/configure       \
 		--build=$build      \
 	    	--host=$build       \
-	    	--target=$crosstarget \
-	    	--prefix=$utoolscross \
+	    	--target=$crosstarget  \
+	    	--prefix=$utoolscross  \
+		--with-sysroot=$utools \
 		--disable-nls       \
 		--disable-werror    \
-		--enable-static     \
-		--enable-shared     \
+		--enable-gprofng=no \
 		--enable-threads    \
 		--enable-multilib   \
 	    	--with-zstd=$utoolscross \
 		--with-zlib=$utoolscross \
-	    	--with-sysroot=$utools   \
-		--with-lib-path=$utools/lib:$utools/lib32:$utools/libx32
+		--with-lib-path=/utools/lib:/utools/lib32:/utools/libx32
 
 make -j$(nproc)
 make install DESTDIR=$installdir || exit $?
