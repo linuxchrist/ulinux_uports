@@ -37,9 +37,9 @@ sub checkconfig {
 	if (-d $uports) {print "$uports\n";}
 	if (-d $src) {push @udirs, "sources ";}
 	if (-d $system) {push @udirs, "ulinux ";}
-	if (-d $pkgdir) {push @udirs, "pkgdir ";}
+	if (-d $pkgdir) {push @udirs, "pkgs ";}
 	if (-d $staging) {push @udirs, "staging ";}
-	if (-d $installdir) {push @udirs, "installdir ";}
+	if (-d $installdir) {push @udirs, "install ";}
 	if (-d $tools) {push @sdirs, "ulinux/utools ";}
         if (-d $crosstools) {push @sdirs, "ulinux/utoolscross ";}
 	print(BOLD BLUE, @udirs, "\n", @sdirs, "\n", RESET);
