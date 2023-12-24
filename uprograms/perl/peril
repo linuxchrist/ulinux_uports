@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 
 require "perilconf";
+&checkconfig;
 
 $pkgname="utoolscross-zlib";
 $pkgver="1.2.8";
@@ -13,4 +14,4 @@ $arch="amd64";
 $depends="";
 $comment="uports: a universal linux/gnu ports collection";
 &checkpkginfo; &checksources;
-&checkfiles;
+&extractfiles;

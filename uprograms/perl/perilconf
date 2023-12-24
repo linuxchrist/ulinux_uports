@@ -19,21 +19,36 @@ $spath = $ENV{'PATH'};
 $upath = ($tpath . $spath );
 $ENV{'PATH'} = $upath;
 
-$cyan = CYAN;
-print($cyan, '-' x 20, 'uports system config', '-' x 20, "\n");
-if (! -d $uports) {mkdir($uports);}elsif (-d $uports) {print "$uports\n"; }
-if (! -d $src) {mkdir($src);}elsif (-d $src) {print "$src\n"; }
-if (! -d $system) {mkdir($system);}elsif (-d $system) {print "$system\n"; }
-if (! -d $tools) {mkdir($tools);}elsif (-d $tools) {print "$tools\n"; }
-if (! -d $crosstools) {mkdir($crosstools);}elsif (-d $crosstools) {print "$crosstools\n"; }
-if (! -d $pkgdir) {mkdir($pkgdir);}elsif (-d $pkgdir) {print "$pkgdir\n"; }
-if (! -d $staging) {mkdir($staging);}elsif (-d $staging) {print "$staging\n"; }
-if (! -d $installdir) {mkdir($installdir);}elsif (-d $installdir) {print "$installdir\n"; }
-if (! -l $utools) {system('ln -sv $tools /');}elsif (-l $utools) {print "$utools -> $tools\n"; }
-if (! -l $utoolscross) {system('ln -sv $crosstools /');}elsif (-l "$utoolscross") {print "$utoolscross -> $crosstools\n"; }
-if (! -l $ulinux) {system('ln -sv $system /');}elsif (-l $ulinux) {print "$ulinux -> $system\n"; }
-print("PATH=", $ENV{'PATH'}, "\n");
-print($cyan, "-" x 60, "\n", RESET);
+if (! -d $uports) {mkdir($uports);}
+if (! -d $src) {mkdir($src);}
+if (! -d $system) {mkdir($system);}
+if (! -d $tools) {mkdir($tools);}
+if (! -d $crosstools) {mkdir($crosstools);}
+if (! -d $pkgdir) {mkdir($pkgdir);}
+if (! -d $staging) {mkdir($staging);}
+if (! -d $installdir) {mkdir($installdir);}
+if (! -l $utools) {system('ln -sv $tools /');}
+if (! -l $utoolscross) {system('ln -sv $crosstools /');}
+if (! -l $ulinux) {system('ln -sv $system /');}
+
+sub checkconfig {
+	$cyan = CYAN;
+	print($cyan, '-' x 20, 'uports system config', '-' x 20, "\n");
+	if (-d $uports) {print "$uports\n";}
+	if (-d $src) {push @udirs, "sources ";}
+	if (-d $system) {push @udirs, "ulinux ";}
+	if (-d $pkgdir) {push @udirs, "pkgdir ";}
+	if (-d $staging) {push @udirs, "staging ";}
+	if (-d $installdir) {push @udirs, "installdir ";}
+	if (-d $tools) {push @sdirs, "ulinux/utools ";}
+        if (-d $crosstools) {push @sdirs, "ulinux/utoolscross ";}
+	print(BOLD BLUE, @udirs, "\n", @sdirs, "\n", RESET);
+	if (-l $utools) {print(BOLD CYAN, "$utools", BOLD GREEN, " -> ", RESET, CYAN, "$tools\n", RESET);}
+	if (-l $utoolscross) {print(BOLD CYAN, "$utoolscross", BOLD GREEN, " -> ", RESET, CYAN, "$crosstools\n", RESET);}
+	if (-l $ulinux) {print(BOLD CYAN, "$ulinux", BOLD GREEN, " -> ", RESET, CYAN, "$system\n", RESET);}
+	print($cyan, "PATH=", BOLD BLUE, $ENV{'PATH'}, "\n", RESET);
+	print($cyan, "-" x 60, "\n", RESET);
+}
 
 $osrel = `cat /etc/os-release | head -n1`;
 if ( $osrel =~ m/Debian/) {
