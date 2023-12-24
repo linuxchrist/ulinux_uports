@@ -13,3 +13,4 @@ $arch="amd64";
 $depends="";
 $comment="uports: a universal linux/gnu ports collection";
 &checkpkginfo; &checksources;
+&checkfiles;
